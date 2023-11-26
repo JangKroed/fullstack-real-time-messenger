@@ -5,9 +5,9 @@ const helmet = require('helmet');
 const cors = require('cors');
 const authRouter = require('./routes/authRouter');
 const session = require('express-session');
-const Redis = require('ioredis');
 const server = require('http').createServer(app);
 const RedisStore = require('connect-redis').default;
+const redisClient = require('./redis');
 require('dotenv').config();
 
 const { COOKIE_SECRET, ENVIROMENT } = process.env;
@@ -18,8 +18,6 @@ const io = new Server(server, {
         credentials: 'true',
     },
 });
-
-const redisClient = new Redis();
 
 app.use(helmet());
 app.use(
