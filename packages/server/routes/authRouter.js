@@ -1,18 +1,12 @@
-const express = require('express');
-const validateForm = require('../controllers/validateForm');
-const router = express.Router();
-const {
-    handleLogin,
-    attempLogin,
-    attempRegister,
-} = require('../controllers/authContoller');
-const { rateLimiter } = require('../controllers/ratelimiter');
+import { Router } from 'express';
+import validateForm from '../controllers/validateForm.js';
+import { handleLogin, attempLogin, attempRegister } from '../controllers/authContoller.js';
+import { rateLimiter } from '../controllers/ratelimiter.js';
 
-router
-    .route('/login')
-    .get(handleLogin)
-    .post(validateForm, rateLimiter(60, 10), attempLogin);
+const router = Router();
+
+router.route('/login').get(handleLogin).post(validateForm, rateLimiter(60, 10), attempLogin);
 
 router.post('/signup', validateForm, rateLimiter(30, 4), attempRegister);
 
-module.exports = router;
+export default router;
