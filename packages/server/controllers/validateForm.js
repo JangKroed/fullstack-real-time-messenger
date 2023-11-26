@@ -1,6 +1,6 @@
-const formSchema = require('@whatsapp.clone/common');
+const { formSchema } = require('@whatsapp.clone/common');
 
-const validateForm = (req, res) => {
+const validateForm = (req, res, next) => {
     const formData = req.body;
     formSchema
         .validate(formData)
@@ -10,8 +10,8 @@ const validateForm = (req, res) => {
         })
         .then((valid) => {
             if (valid) {
-                res.status(200).send();
                 console.log('form is good');
+                next();
             }
         });
 };
