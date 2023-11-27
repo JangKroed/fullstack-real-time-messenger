@@ -3,7 +3,6 @@ import bcrypt from 'bcrypt';
 
 const handleLogin = async (req, res) => {
   const { user } = req.session;
-  console.log(user);
   if (user && user.username) {
     console.log('logged in');
     res.json({ loggedIn: true, username: user.username });
