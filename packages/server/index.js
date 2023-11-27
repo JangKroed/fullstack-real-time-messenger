@@ -25,8 +25,8 @@ app.use('/auth', authRouter);
 io.use(wrap(sessionMiddleware));
 io.use(authorizeUser);
 io.on('connect', (socket) => {
-  console.log(socket.id);
-  console.log(socket.request.session.user.username);
+  console.log('USER ID: ', socket.user.userid);
+  console.log('/ USERNAME: ', socket.user.username);
 });
 
 server.listen(4000, () => {

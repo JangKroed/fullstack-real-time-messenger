@@ -1,5 +1,6 @@
 import pool from '../db.js';
 import bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
 
 const handleLogin = async (req, res) => {
   const { user } = req.session;
@@ -15,7 +16,7 @@ const attempLogin = async (req, res) => {
   const { username, password } = req.body;
 
   const potentialLogin = await pool.query(
-    'SELECT id, username, passhash FROM users u WHERE u.username=$1',
+    'SELECT id, username, passhash, userid FROM users u WHERE u.username=$1',
     [username]
   );
 
@@ -26,6 +27,7 @@ const attempLogin = async (req, res) => {
       req.session.user = {
         username,
         id: potentialLogin.rows[0].id,
+        userid: potentialLogin.rows[0].userid,
       };
       res.json({ loggedIn: true, username });
     } else {
@@ -50,13 +52,14 @@ const attempRegister = async (req, res) => {
     // register
     const hashedPass = await bcrypt.hash(password, 10);
     const newUserQuery = await pool.query(
-      'INSERT INTO users(username, passhash) values ($1,$2) RETURNING id, username',
-      [username, hashedPass]
+      'INSERT INTO users(username, passhash, userid) values ($1,$2,$3) RETURNING id, username, userid',
+      [username, hashedPass, uuidv4()]
     );
 
     req.session.user = {
       username,
       id: newUserQuery.rows[0].id,
+      userid: newUserQuery.rows[0].userid,
     };
     res.json({ loggedIn: true, username });
   } else {
